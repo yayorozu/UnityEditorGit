@@ -12,7 +12,7 @@ namespace Yayorozu.EditorTools.Git
 		UnStage,
 	}
 
-	internal class GitTreeViewItem : TreeViewItem, IEqualityComparer
+	public class GitTreeViewItem : TreeViewItem, IEqualityComparer
 	{
 		internal GitStatusType Status { get; }
 

@@ -10,8 +10,8 @@ namespace Yayorozu.EditorTools.Git
 	public class GitCommit : GitModule
 	{
 		internal override ModuleType Type => ModuleType.Commit;
-
 		internal override KeyCode KeyCode => KeyCode.C;
+		internal override string Name => "Commit";
 
 		private string _message;
 

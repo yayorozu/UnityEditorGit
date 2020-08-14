@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Boo.Lang;
+using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
@@ -21,6 +22,8 @@ namespace Yayorozu.EditorTools.Git
 
 		[SerializeField]
 		private GitModule[] _modules;
+
+		private GUIContent _content = new GUIContent();
 
 		private void Init()
 		{
@@ -69,9 +72,43 @@ namespace Yayorozu.EditorTools.Git
 		}
 
 
-		public void OnGUI(Rect rect)
+		public void OnGUI()
 		{
 			Init();
+
+			var rect = GUILayoutUtility.GetRect(0, float.MaxValue, 0, float.MaxValue);
+
+			var tr = new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight);
+			// Toolbar
+			{
+				//tr.y = 0;
+				_content.text = "Mode:";
+				tr.width = EditorStyles.boldLabel.CalcSize(_content).x;
+				EditorGUI.LabelField(tr, _content, EditorStyles.boldLabel);
+				tr.x += tr.width + EditorGUIUtility.standardVerticalSpacing;
+
+				foreach (var module in _modules)
+				{
+					var style = (int) module.Type == _main ? EditorStyles.boldLabel : EditorStyles.label;
+					_content.text = $"[{module.KeyCode}:{module.Name}]";
+					tr.width = style.CalcSize(_content).x;
+					EditorGUI.LabelField(tr, _content, style);
+					tr.x += tr.width + EditorGUIUtility.standardVerticalSpacing;
+				}
+
+				tr.x += 10;
+				_content.text = "ShortCut:";
+				tr.width = EditorStyles.boldLabel.CalcSize(_content).x;
+				EditorGUI.LabelField(tr, _content, EditorStyles.boldLabel);
+				tr.x += tr.width + EditorGUIUtility.standardVerticalSpacing;
+
+				_content.text = string.Join(", ", _modules[_main].ShortCuts.Select(l => l.ToString()));
+				tr.width = EditorStyles.boldLabel.CalcSize(_content).x;
+				EditorGUI.LabelField(tr, _content, EditorStyles.label);
+			}
+
+			rect.y += EditorGUIUtility.singleLineHeight;
+			rect.height -= EditorGUIUtility.singleLineHeight;
 
 			if (_hasSub)
 				rect.width /= 2;
@@ -162,7 +199,12 @@ namespace Yayorozu.EditorTools.Git
 			}
 
 			var target = _hasSub && _subTreeView.HasFocus() ? _sub : _main;
-			_modules[target].KeyEvent(keyCode);
+			var c = _modules[target].TreeView;
+			var item = c.GetSelectionItem();
+			if (item == null)
+				return;
+
+			_modules[target].KeyEvent(item as GitTreeViewItem, keyCode);
 		}
 
 		private void SingleClick(GitTreeViewItem item)

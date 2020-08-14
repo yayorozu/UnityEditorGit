@@ -6,5 +6,6 @@ namespace Yayorozu.EditorTools.Git
 		Commit,
 		Log,
 		Diff,
+		Branch,
 	}
 }

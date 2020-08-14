@@ -13,6 +13,22 @@ namespace Yayorozu.EditorTools.Git
 	{
 		internal override ModuleType Type => ModuleType.Status;
 		internal override KeyCode KeyCode => KeyCode.S;
+		internal override string Name => "Status";
+
+		protected override void OnInit()
+		{
+			KeyDic.Add(KeyCode.U, ChangeStage);
+			// Refresh
+			KeyDic.Add(KeyCode.R, item => Refresh(TreeView.GetSelectionIndex()));
+			KeyDic.Add(KeyCode.Z, ChangeUndo);
+			KeyDic.Add(KeyCode.Return, item => {
+				if (item.depth != 1)
+					return;
+				var param = new DiffParam();
+				param.SetFile(item.displayName, item.Status == GitStatusType.Stage);
+				GUI.OpenSub(ModuleType.Diff, param);
+			});
+		}
 
 		internal override void OnEnter(object o)
 		{
@@ -73,64 +89,44 @@ namespace Yayorozu.EditorTools.Git
 
 		}
 
-		internal override void KeyEvent(KeyCode keyCode)
+		private string GetPath(GitTreeViewItem item)
 		{
-			var item = TreeView.GetSelectionItem();
-			if (item == null)
-				return;
-
-			var gi = item as GitTreeViewItem;
-			if (gi == null)
-				return;
-
 			// 0なら子供を全部変更する
-			var path = item.depth == 0 && item.children != null
+			return item.depth == 0 && item.children != null
 				? string.Join(" ", item.children.Select(i => (i as GitTreeViewItem).StatusFilePath))
-				: gi.StatusFilePath;
+				: item.StatusFilePath;
+		}
 
-			if (keyCode == KeyCode.U)
+		private void ChangeStage(GitTreeViewItem item)
+		{
+			var path = GetPath(item);
+			switch (item.Status)
 			{
-				switch (gi.Status)
-				{
-					case GitStatusType.UnStage:
-					case GitStatusType.UnTrack:
-						Add(path);
-						break;
-					case GitStatusType.Stage:
-						Reset(path);
-						break;
-				}
+				case GitStatusType.UnStage:
+				case GitStatusType.UnTrack:
+					Add(path);
+					break;
+				case GitStatusType.Stage:
+					Reset(path);
+					break;
+			}
 
+			Refresh(TreeView.GetSelectionIndex());
+		}
+
+		private void ChangeUndo(GitTreeViewItem item)
+		{
+			var path = GetPath(item);
+			if (item.Status == GitStatusType.UnStage)
+			{
+				Checkout(path);
 				Refresh(TreeView.GetSelectionIndex());
 			}
 
-			// Reload
-			if (keyCode == KeyCode.R)
+			if (item.Status == GitStatusType.UnTrack)
 			{
+				Clean(path);
 				Refresh(TreeView.GetSelectionIndex());
-			}
-
-			// もとに戻すと同様に
-			if (keyCode == KeyCode.Z)
-			{
-				if (gi.Status == GitStatusType.UnStage)
-				{
-					Checkout(path);
-					Refresh(TreeView.GetSelectionIndex());
-				}
-
-				if (gi.Status == GitStatusType.UnTrack)
-				{
-					Clean(path);
-					Refresh(TreeView.GetSelectionIndex());
-				}
-			}
-
-			if (keyCode == KeyCode.Return && item.depth == 1)
-			{
-				var param = new DiffParam();
-				param.SetFile(item.displayName, gi.Status == GitStatusType.Stage);
-				GUI.OpenSub(ModuleType.Diff, param);
 			}
 		}
 

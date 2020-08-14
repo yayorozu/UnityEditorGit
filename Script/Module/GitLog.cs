@@ -11,6 +11,7 @@ namespace Yayorozu.EditorTools.Git
 	{
 		internal override ModuleType Type => ModuleType.Log;
 		internal override KeyCode KeyCode => KeyCode.L;
+		internal override string Name => "Log";
 
 		private float[] MaxWidth = {0f, 0f, 0f, 0f, 0f, 0f};
 		private Color[] colors =
@@ -23,9 +24,19 @@ namespace Yayorozu.EditorTools.Git
 			Color.black,
 		};
 
+		protected override void OnInit()
+		{
+			KeyDic.Add(KeyCode.Return, item =>
+			{
+				var param = new DiffParam();
+				param.SetHash(item.displayName);
+				GUI.OpenSub(ModuleType.Diff, param);
+			});
+		}
+
 		internal override void OnEnter(object o)
 		{
-			var items = GetLog()
+			var items = GetLog(o != null ? (string) o : "")
 				.Select((l, index) => new GitTreeViewItem(l)
 				{
 					id = index
@@ -61,20 +72,6 @@ namespace Yayorozu.EditorTools.Git
 				rect.width = MaxWidth[i] + EditorGUIUtility.standardVerticalSpacing * 4;
 				EditorGUI.LabelField(rect, item[i], ColorLabel.Get(colors[i]));
 				rect.xMin += rect.width;
-			}
-		}
-
-		internal override void KeyEvent(KeyCode keyCode)
-		{
-			if (keyCode == KeyCode.Return)
-			{
-				var item = TreeView.GetSelectionItem();
-				if (item != null)
-				{
-					var param = new DiffParam();
-					param.SetHash(item.displayName);
-					GUI.OpenSub(ModuleType.Diff, param);
-				}
 			}
 		}
 	}

@@ -15,12 +15,22 @@ namespace Yayorozu.EditorTools.Git
 
 		internal bool Lock;
 
+		protected Dictionary<KeyCode, Action<GitTreeViewItem>> KeyDic = new Dictionary<KeyCode, Action<GitTreeViewItem>>();
+
+		internal IEnumerable<KeyCode> ShortCuts => KeyDic.Keys;
+
 		internal void Init(GitGUI window)
 		{
 			GUI = window;
+			OnInit();
+		}
+
+		protected virtual void OnInit()
+		{
 		}
 
 		internal abstract ModuleType Type { get; }
+		internal abstract string Name { get; }
 
 		internal virtual void OnGUI(Rect rect)
 		{
@@ -34,13 +44,27 @@ namespace Yayorozu.EditorTools.Git
 
 		internal virtual void SingleClick(GitTreeViewItem item) { }
 
-		internal virtual void DoubleClick(GitTreeViewItem item) { }
+		internal virtual void DoubleClick(GitTreeViewItem item)
+		{
+			KeyEvent(item, KeyCode.Return);
+		}
 
-		internal virtual void KeyEvent(KeyCode keyCode) { }
+		internal void KeyEvent(GitTreeViewItem item, KeyCode keyCode)
+		{
+			if (!KeyDic.ContainsKey(keyCode))
+				return;
+
+			KeyDic[keyCode].Invoke(item);
+		}
 
 		protected void Add(string path)
 		{
 			Command.Exec($"git add {path}");
+		}
+
+		protected void Fetch()
+		{
+			Command.Exec($"git fetch --prune");
 		}
 
 		protected void Reset(string path)
@@ -56,6 +80,29 @@ namespace Yayorozu.EditorTools.Git
 		protected void Clean(string path)
 		{
 			Command.Exec($"git clean -fd {path}");
+		}
+
+		protected void Switch(string branch)
+		{
+			Command.Exec($"git checkout {branch}");
+		}
+
+		protected void CreateBranch(string branch)
+		{
+			if (string.IsNullOrEmpty(branch))
+				return;
+
+			Command.Exec($"git checkout -b {branch}");
+		}
+
+		protected string Stash()
+		{
+			return Command.Exec($"git stash -u");
+		}
+
+		protected string CurrentBranch()
+		{
+			return Command.Exec("git symbolic-ref --short HEAD");
 		}
 
 		protected IEnumerable<string> GetShow(string hash)
@@ -79,6 +126,13 @@ namespace Yayorozu.EditorTools.Git
 		protected IEnumerable<string> GetStatus()
 		{
 			return Command.Exec("git status -s -u")
+				.Split('\n')
+				.Where(l => !string.IsNullOrEmpty(l));
+		}
+
+		protected IEnumerable<string> GetBranches()
+		{
+			return Command.Exec("git branch -a")
 				.Split('\n')
 				.Where(l => !string.IsNullOrEmpty(l));
 		}
@@ -116,9 +170,9 @@ namespace Yayorozu.EditorTools.Git
 				});
 		}
 
-		protected IEnumerable<string> GetLog()
+		protected IEnumerable<string> GetLog(string branch = "")
 		{
-			var command = "git log --graph --format=\"hash={%h} date={%ad} author={%an} branch={%d} commit=%s\" --date=iso -100";
+			var command = "git log " + branch + " --graph --format=\"hash={%h} date={%ad} author={%an} branch={%d} commit=%s\" --date=iso -100";
 			return Command.Exec(command)
 				.Split('\n')
 				.Where(l => !string.IsNullOrEmpty(l));

@@ -66,7 +66,7 @@ namespace Yayorozu.EditorTools.Git
 			return Exec(c, args);
 		}
 
-		public static string Exec(string command, string args)
+		private static string Exec(string command, string args)
 		{
 			var path = FindPath(command);
 

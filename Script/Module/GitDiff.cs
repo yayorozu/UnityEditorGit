@@ -45,10 +45,22 @@ namespace Yayorozu.EditorTools.Git
 	public class GitDiff : GitModule
 	{
 		internal override ModuleType Type => ModuleType.Diff;
-		internal override KeyCode KeyCode => KeyCode.Joystick1Button0;
+		internal override KeyCode KeyCode => KeyCode.D;
+		internal override string Name => "Diff";
+
+		protected override void OnInit()
+		{
+			KeyDic.Add(KeyCode.Return, Jump);
+		}
+
 
 		internal override void OnEnter(object o)
 		{
+			if (o == null)
+			{
+				GUI.Transition(ModuleType.Log);
+				return;
+			}
 			var param = (DiffParam) o;
 			var list = param.isLog ?
 					GetLogList(param) :
@@ -121,7 +133,7 @@ namespace Yayorozu.EditorTools.Git
 				})
 				.Cast<TreeViewItem>()
 				.ToList();
-			
+
 		}
 
 		private List<TreeViewItem> GetDiffList(DiffParam param)
@@ -203,18 +215,6 @@ namespace Yayorozu.EditorTools.Git
 
 
 			return ColorLabel.Get(Color.black);
-		}
-
-		internal override void KeyEvent(KeyCode keyCode)
-		{
-			if (keyCode == KeyCode.Return)
-			{
-				var item = TreeView.GetSelectionItem();
-				if (item != null)
-				{
-					Jump(item as GitTreeViewItem);
-				}
-			}
 		}
 
 		private void Jump(GitTreeViewItem item)

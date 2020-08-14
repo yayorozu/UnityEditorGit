@@ -25,7 +25,7 @@ namespace Yayorozu.EditorTools.Git
 		private void OnGUI()
 		{
 			Init();
-			_gui.OnGUI(GUILayoutUtility.GetRect(0, float.MaxValue, 0, float.MaxValue));
+			_gui.OnGUI();
 		}
 	}
 }
