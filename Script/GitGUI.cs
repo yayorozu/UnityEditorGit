@@ -92,7 +92,11 @@ namespace Yayorozu.EditorTools.Git
 					var style = (int) module.Type == _main ? EditorStyles.boldLabel : EditorStyles.label;
 					_content.text = $"[{module.KeyCode}:{module.Name}]";
 					tr.width = style.CalcSize(_content).x;
-					EditorGUI.LabelField(tr, _content, style);
+					if (GUI.Button(tr, _content, style))
+					{
+						Transition(module.Type);
+						GUIUtility.ExitGUI();
+					}
 					tr.x += tr.width + EditorGUIUtility.standardVerticalSpacing;
 				}
 
