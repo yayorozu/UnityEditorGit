@@ -72,7 +72,7 @@ namespace Yayorozu.EditorTools.Git
 			);
 		}
 
-		internal override void DoubleClick(GitTreeViewItem item)
+		internal override void SingleClick(GitTreeViewItem item)
 		{
 			if (item.depth != 1)
 				return;
@@ -86,9 +86,13 @@ namespace Yayorozu.EditorTools.Git
 
 			var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(item.displayName);
 			Selection.objects = new []{asset};
-
 		}
 
+		internal override void DoubleClick(GitTreeViewItem item)
+		{
+			KeyEvent(item, KeyCode.U);
+		}
+		
 		private string GetPath(GitTreeViewItem item)
 		{
 			// 0なら子供を全部変更する

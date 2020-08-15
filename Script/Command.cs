@@ -36,6 +36,7 @@ namespace Yayorozu.EditorTools.Git
 		/// <returns></returns>
 		private static string FindPath(string command)
 		{
+#if UNITY_EDITOR_OSX
 			foreach (var path in paths)
 			{
 				var fullPath = Path.Combine(path, command);
@@ -45,6 +46,9 @@ namespace Yayorozu.EditorTools.Git
 			}
 
 			return string.Empty;
+#else
+			return command;
+#endif
 		}
 
 		/// <summary>
