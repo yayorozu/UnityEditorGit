@@ -41,6 +41,7 @@ namespace Yayorozu.EditorTools.Git
 				var branch = CurrentBranch();
 				if (EditorUtility.DisplayDialog("Warning", $"Try to Push \"{branch}\" ?", "Yes", "No"))
 				{
+					Push(branch);
 					OnEnter(branch);
 				}
 			});
