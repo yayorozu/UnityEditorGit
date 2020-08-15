@@ -19,6 +19,8 @@ namespace Yayorozu.EditorTools.Git
 
 		internal IEnumerable<KeyCode> ShortCuts => KeyDic.Keys;
 
+		protected static readonly char[] GitStatusChar = {'M', 'A', 'D', 'R', 'C', 'U'};
+
 		internal void Init(GitGUI window)
 		{
 			GUI = window;
@@ -153,7 +155,7 @@ namespace Yayorozu.EditorTools.Git
 		protected IEnumerable<TreeViewItem> GetStage(IEnumerable<string> output, int depth = 1, int startIndex = 0)
 		{
 			return output
-				.Where(l => l[0] == 'M' || l[0] == 'D' || l[0] == 'A' || l[0] == 'R')
+				.Where(l => GitStatusChar.Contains(l[0]))
 				.Select((l, i) => new GitTreeViewItem(l, GitStatusType.Stage)
 				{
 					id = startIndex + i,
@@ -164,7 +166,7 @@ namespace Yayorozu.EditorTools.Git
 		protected IEnumerable<TreeViewItem> GetUnStage(IEnumerable<string> output, int depth = 1, int startIndex = 0)
 		{
 			return output
-				.Where(l => l[1] == 'M' || l[1] == 'D' || l[1] == 'A')
+				.Where(l => GitStatusChar.Contains(l[1]))
 				.Select((l, i) => new GitTreeViewItem(l, GitStatusType.UnStage)
 				{
 					id = startIndex + i,

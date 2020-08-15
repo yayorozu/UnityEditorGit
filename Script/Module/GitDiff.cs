@@ -140,7 +140,7 @@ namespace Yayorozu.EditorTools.Git
 		{
 			var line = 0;
 			var filePath = param.Str;
-			return GetDiff(param.Str, param.PrevFileName, param.IsStaged)
+			return GetDiff("\'" + param.Str + "\'", "\'" + param.PrevFileName + "\'", param.IsStaged)
 				.Select((l, i) =>
 				{
 					if (l.StartsWith("@@"))

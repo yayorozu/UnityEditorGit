@@ -58,7 +58,7 @@ namespace Yayorozu.EditorTools.Git
 		/// <returns></returns>
 		public static string Exec(string command)
 		{
-			command = command.TrimStart();
+			command = command.Trim();
 			var index = command.IndexOf(' ');
 
 			if (index < 0)

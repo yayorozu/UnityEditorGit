@@ -51,9 +51,16 @@ namespace Yayorozu.EditorTools.Git
 			}
 		}
 
-		internal string StatusFilePath =>
-			// ファイル名が変わった場合はArrowが表示される
-			!displayName.Contains("->") ? displayName : displayName.Substring(displayName.IndexOf("->") + 3);
+		internal string StatusFilePath
+		{
+			get
+			{
+				// ファイル名が変わった場合はArrowが表示される
+				var name = !displayName.Contains("->") ? displayName : displayName.Substring(displayName.IndexOf("->") + 3);
+				// ファイル名にスペースあるとできないので
+				return $"'{name}'";
+			}
+		}
 
 		internal GitTreeViewItem()
 		{
@@ -116,7 +123,13 @@ namespace Yayorozu.EditorTools.Git
 		{
 			Status = status;
 			StatusText = statusLog.Substring(0, 2);
-			displayName = statusLog.Substring(3);
+			var fileName = statusLog.Substring(3);
+			// git add の際にスペースがあるファイル名を''で囲んだ場合前後に""が表示される
+			if (fileName.StartsWith("\""))
+			{
+				fileName = fileName.Substring(1, fileName.Length - 2);
+			}
+			displayName = fileName;
 		}
 
 		internal char GetStatusText()
