@@ -28,6 +28,22 @@ namespace Yayorozu.EditorTools.Git
 				param.SetFile(item.displayName, item.Status == GitStatusType.Stage);
 				GUI.OpenSub(ModuleType.Diff, param);
 			});
+			KeyDic.Add(KeyCode.T, item =>
+			{
+				if (item.depth != 1)
+					return;
+
+				// スクリプト
+				if (item.displayName.EndsWith(".cs"))
+				{
+					InternalEditorUtility.OpenFileAtLineExternal(item.displayName, 0);
+
+					return;
+				}
+
+				var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(item.displayName);
+				Selection.objects = new[] {asset};
+			});
 		}
 
 		internal override void OnEnter(object o)
@@ -72,27 +88,11 @@ namespace Yayorozu.EditorTools.Git
 			);
 		}
 
-		internal override void SingleClick(GitTreeViewItem item)
-		{
-			if (item.depth != 1)
-				return;
-
-			// スクリプト
-			if (item.displayName.EndsWith(".cs"))
-			{
-				InternalEditorUtility.OpenFileAtLineExternal(item.displayName, 0);
-				return;
-			}
-
-			var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(item.displayName);
-			Selection.objects = new []{asset};
-		}
-
 		internal override void DoubleClick(GitTreeViewItem item)
 		{
 			KeyEvent(item, KeyCode.U);
 		}
-		
+
 		private string GetPath(GitTreeViewItem item)
 		{
 			// 0なら子供を全部変更する

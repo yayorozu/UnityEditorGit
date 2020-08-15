@@ -104,7 +104,7 @@ namespace Yayorozu.EditorTools.Git
 			{
 				if (!EditorUtility.DisplayDialog(
 					"Warning",
-					"There is diff, but it is okay to switch branch?",
+					"There is a diff, want to switch branch?",
 					"Yes",
 					"No"))
 					return;

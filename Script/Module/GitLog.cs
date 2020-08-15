@@ -32,6 +32,39 @@ namespace Yayorozu.EditorTools.Git
 				param.SetHash(item.displayName);
 				GUI.OpenSub(ModuleType.Diff, param);
 			});
+			KeyDic.Add(KeyCode.P, item =>
+			{
+				var branch = CurrentBranch();
+				if (EditorUtility.DisplayDialog("Warning", $"Try to Push \"{branch}\" ?", "Yes", "No"))
+				{
+					EditorUtility.DisplayDialog("Info", Push(branch), "Ok");
+				}
+			});
+			KeyDic.Add(KeyCode.F, item =>
+			{
+				var cb = CurrentBranch();
+				if (cb.StartsWith("origin/"))
+					return;
+
+				var output = GetStatus();
+				// 差分があった場合
+				if (output.Count() - GetUntrack(output).Count() > 0)
+				{
+					if (!EditorUtility.DisplayDialog(
+						"Warning",
+						"There is a diff, want to pull rebase?",
+						"Yes",
+						"No"))
+						return;
+
+					var o2 = Stash();
+					EditorUtility.DisplayDialog("Info", o2, "Ok");
+				}
+
+				var o3 = PullRebase(cb);
+				EditorUtility.DisplayDialog("Info", o3, "Ok");
+				OnEnter(cb);
+			});
 		}
 
 		internal override void OnEnter(object o)

@@ -105,6 +105,14 @@ namespace Yayorozu.EditorTools.Git
 			return Command.Exec("git symbolic-ref --short HEAD");
 		}
 
+		protected string Push(string branch)
+		{
+			if (string.IsNullOrEmpty(branch))
+				return "Branch name is empty";
+
+			return Command.Exec($"git push origin {branch}");
+		}
+
 		protected IEnumerable<string> GetShow(string hash)
 		{
 			return string.Join("\n",
@@ -135,6 +143,11 @@ namespace Yayorozu.EditorTools.Git
 			return Command.Exec("git branch -a")
 				.Split('\n')
 				.Where(l => !string.IsNullOrEmpty(l));
+		}
+
+		protected string PullRebase(string branch)
+		{
+			return Command.Exec($"git pull --rebase origin {branch}");
 		}
 
 		protected IEnumerable<TreeViewItem> GetStage(IEnumerable<string> output, int depth = 1, int startIndex = 0)
