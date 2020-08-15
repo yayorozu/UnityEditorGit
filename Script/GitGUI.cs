@@ -133,12 +133,12 @@ namespace Yayorozu.EditorTools.Git
 
 			if (_hasSub)
 			{
-				_modules[_sub].OnExit();
+				_modules[_sub].Exit();
 				_subTreeView.Clear();
 			}
 			_hasSub = false;
 
-			_modules[_main].OnExit();
+			_modules[_main].Exit();
 			_main = (int) type;
 			_treeView.Clear();
 			_modules[_main].TreeView = _treeView;
@@ -171,7 +171,7 @@ namespace Yayorozu.EditorTools.Git
 			if (!_hasSub)
 				return;
 
-			_modules[_sub].OnExit();
+			_modules[_sub].Exit();
 			_sub = -1;
 			_hasSub = false;
 			_treeView.SetFocus();

@@ -40,7 +40,15 @@ namespace Yayorozu.EditorTools.Git
 		}
 
 		internal abstract void OnEnter(object o);
-		internal abstract void OnExit();
+
+		internal void Exit()
+		{
+			TreeView.SetRowAction();
+			TreeView = null;
+			OnExit();
+		}
+
+		protected virtual void OnExit(){}
 
 		internal abstract KeyCode KeyCode { get; }
 
@@ -104,7 +112,7 @@ namespace Yayorozu.EditorTools.Git
 
 		protected string CurrentBranch()
 		{
-			return Command.Exec("git symbolic-ref --short HEAD");
+			return Command.Exec("git symbolic-ref --short HEAD").Trim();
 		}
 
 		protected string Push(string branch)

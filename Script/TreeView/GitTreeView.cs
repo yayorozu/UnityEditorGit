@@ -10,7 +10,7 @@ namespace Yayorozu.EditorTools.Git
 	{
 		private List<TreeViewItem> _list;
 
-		internal Action<Rect, GitTreeViewItem> rowAction;
+		private Action<Rect, GitTreeViewItem> rowAction;
 		internal float DepthIndentWidth => depthIndentWidth;
 
 		internal Action<GitTreeViewItem> SingleClickAction;
@@ -155,6 +155,11 @@ namespace Yayorozu.EditorTools.Git
 		protected override bool CanMultiSelect(TreeViewItem item)
 		{
 			return false;
+		}
+
+		internal void SetRowAction(Action<Rect, GitTreeViewItem> action = null)
+		{
+			rowAction = action;
 		}
 	}
 }

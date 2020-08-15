@@ -50,7 +50,7 @@ namespace Yayorozu.EditorTools.Git
 		{
 			Refresh((int?) o ?? 0);
 
-			TreeView.rowAction += Row;
+			TreeView.SetRowAction(Row);
 		}
 
 		private void Refresh(int index = 0)
@@ -63,11 +63,6 @@ namespace Yayorozu.EditorTools.Git
 
 			index = Mathf.Clamp(index, 0, rows.Count - 1);
 			TreeView.SetSelection(new List<int>{rows[index].id});
-		}
-
-		internal override void OnExit()
-		{
-			TreeView.rowAction = null;
 		}
 
 		private void Row(Rect rect, GitTreeViewItem item)

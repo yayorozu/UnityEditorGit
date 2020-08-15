@@ -27,7 +27,7 @@ namespace Yayorozu.EditorTools.Git
 			TreeView.Set(list);
 		}
 
-		internal override void OnExit()
+		protected override void OnExit()
 		{
 		}
 

@@ -53,7 +53,6 @@ namespace Yayorozu.EditorTools.Git
 			KeyDic.Add(KeyCode.Return, Jump);
 		}
 
-
 		internal override void OnEnter(object o)
 		{
 			if (o == null)
@@ -66,7 +65,7 @@ namespace Yayorozu.EditorTools.Git
 					GetLogList(param) :
 					GetDiffList(param);
 
-			TreeView.rowAction += RowAction;
+			TreeView.SetRowAction(RowAction);
 			TreeView.Set(list);
 			TreeView.SetSelection(new List<int>());
 			TreeView.SetFocusAndEnsureSelectedItem();
@@ -168,11 +167,6 @@ namespace Yayorozu.EditorTools.Git
 				})
 				.Cast<TreeViewItem>()
 				.ToList();
-		}
-
-		internal override void OnExit()
-		{
-			TreeView.rowAction = null;
 		}
 
 		private void RowAction(Rect rect, GitTreeViewItem item)

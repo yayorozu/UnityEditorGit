@@ -44,12 +44,12 @@ namespace Yayorozu.EditorTools.Git
 				.ToList();
 
 			TreeView.Set(list);
-			TreeView.rowAction += RowAction;
+			TreeView.SetRowAction(RowAction);
 		}
 
-		internal override void OnExit()
+		protected override void OnExit()
 		{
-			TreeView.rowAction = null;
+			TreeView.SetRowAction();
 		}
 
 		private void RowAction(Rect rect, GitTreeViewItem item)

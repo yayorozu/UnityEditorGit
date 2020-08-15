@@ -37,7 +37,7 @@ namespace Yayorozu.EditorTools.Git
 				var branch = CurrentBranch();
 				if (EditorUtility.DisplayDialog("Warning", $"Try to Push \"{branch}\" ?", "Yes", "No"))
 				{
-					EditorUtility.DisplayDialog("Info", Push(branch), "Ok");
+					OnEnter(branch);
 				}
 			});
 			KeyDic.Add(KeyCode.F, item =>
@@ -90,12 +90,7 @@ namespace Yayorozu.EditorTools.Git
 				}
 			}
 
-			TreeView.rowAction += RowAction;
-		}
-
-		internal override void OnExit()
-		{
-			TreeView.rowAction = null;
+			TreeView.SetRowAction(RowAction);
 		}
 
 		private void RowAction(Rect rect, GitTreeViewItem item)
