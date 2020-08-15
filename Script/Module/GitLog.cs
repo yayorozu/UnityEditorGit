@@ -32,6 +32,10 @@ namespace Yayorozu.EditorTools.Git
 				param.SetHash(item.displayName);
 				GUI.OpenSub(ModuleType.Diff, param);
 			});
+			KeyDic.Add(KeyCode.R, item =>
+			{
+				OnEnter(CurrentBranch());
+			});
 			KeyDic.Add(KeyCode.P, item =>
 			{
 				var branch = CurrentBranch();
