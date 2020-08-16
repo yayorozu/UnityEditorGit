@@ -93,7 +93,6 @@ namespace Yayorozu.EditorTools.Git
 			var tr = new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight);
 			// Toolbar
 			{
-				//tr.y = 0;
 				_content.text = "Mode:";
 				tr.width = EditorStyles.boldLabel.CalcSize(_content).x;
 				EditorGUI.LabelField(tr, _content, EditorStyles.boldLabel);
@@ -118,7 +117,8 @@ namespace Yayorozu.EditorTools.Git
 				EditorGUI.LabelField(tr, _content, EditorStyles.boldLabel);
 				tr.x += tr.width + EditorGUIUtility.standardVerticalSpacing;
 
-				_content.text = string.Join(", ", _modules[_main].ShortCuts.Select(l => l.ToString()));
+				_content.text = string.Join(", ", _modules[_main].ShortCuts
+					.Select(l => $"[{l.KeyCode}:{l.Description}]"));
 				tr.width = EditorStyles.boldLabel.CalcSize(_content).x;
 				EditorGUI.LabelField(tr, _content, EditorStyles.label);
 			}

@@ -33,7 +33,7 @@ namespace Yayorozu.EditorTools.Git
 
 		protected List<ShortCut> KeyDic;
 
-		internal IEnumerable<KeyCode> ShortCuts => KeyDic.Select(k => k.KeyCode);
+		internal IEnumerable<ShortCut> ShortCuts => KeyDic;
 
 		protected static readonly char[] GitStatusChar = {'M', 'A', 'D', 'R', 'C', 'U'};
 
