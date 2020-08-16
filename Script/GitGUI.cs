@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Boo.Lang;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -10,8 +10,11 @@ namespace Yayorozu.EditorTools.Git
 	[Serializable]
 	public class GitGUI
 	{
+		[SerializeField]
 		private int _main;
+		[SerializeField]
 		private int _sub;
+		[SerializeField]
 		private bool _hasSub;
 
 		private GitTreeView _treeView;
@@ -20,33 +23,13 @@ namespace Yayorozu.EditorTools.Git
 		private GitTreeView _subTreeView;
 		private TreeViewState _subState;
 
-		[SerializeField]
-		private GitModule[] _modules;
+		[SerializeReference]
+		private List<GitModule> _modules;
 
 		private GUIContent _content = new GUIContent();
 
 		private void Init()
 		{
-			if (_state == null)
-				_state = new TreeViewState();
-			if (_treeView == null)
-			{
-				_treeView = new GitTreeView(_state);
-				_treeView.KeyEventAction += KeyEvent;
-				_treeView.SingleClickAction += SingleClick;
-				_treeView.DoubleClickAction += DoubleClick;
-			}
-
-			if (_subState == null)
-				_subState = new TreeViewState();
-			if (_subTreeView == null)
-			{
-				_subTreeView = new GitTreeView(_subState);
-				_subTreeView.KeyEventAction += KeyEvent;
-				_subTreeView.SingleClickAction += SingleClick;
-				_subTreeView.DoubleClickAction += DoubleClick;
-			}
-
 			if (_modules == null)
 			{
 				var type = typeof(GitModule);
@@ -60,17 +43,46 @@ namespace Yayorozu.EditorTools.Git
 						return i;
 					})
 					.OrderBy(i => (int) i.Type)
-					.ToArray();
+					.ToList();
 
 				_hasSub = false;
 				_sub = -1;
 				_main = (int) ModuleType.Log;
-				_treeView.Clear();
+				_modules[_main].Enter(null);
+			}
+
+
+			if (_state == null)
+				_state = new TreeViewState();
+			if (_treeView == null)
+			{
+				_treeView = new GitTreeView(_state);
+				_treeView.KeyEventAction += KeyEvent;
+				_treeView.SingleClickAction += SingleClick;
+				_treeView.DoubleClickAction += DoubleClick;
+
+				foreach (var m in _modules)
+					m.Init(this);
+
 				_modules[_main].TreeView = _treeView;
-				_modules[_main].OnEnter(null);
+				_modules[_main].Reload();
+			}
+
+			if (_subState == null)
+				_subState = new TreeViewState();
+			if (_subTreeView == null)
+			{
+				_subTreeView = new GitTreeView(_subState);
+				_subTreeView.KeyEventAction += KeyEvent;
+				_subTreeView.SingleClickAction += SingleClick;
+				_subTreeView.DoubleClickAction += DoubleClick;
+				if (_hasSub)
+				{
+					_modules[_sub].TreeView = _subTreeView;
+					_modules[_sub].Reload();
+				}
 			}
 		}
-
 
 		public void OnGUI()
 		{
@@ -142,7 +154,7 @@ namespace Yayorozu.EditorTools.Git
 			_main = (int) type;
 			_treeView.Clear();
 			_modules[_main].TreeView = _treeView;
-			_modules[_main].OnEnter(obj);
+			_modules[_main].Enter(obj);
 		}
 
 		/// <summary>
@@ -150,15 +162,15 @@ namespace Yayorozu.EditorTools.Git
 		/// </summary>
 		internal void OpenSub(ModuleType type, object param = null)
 		{
-			if (_sub == (int) type)
-				return;
+			if (_sub != (int) type)
+			{
+				CloseSub();
+				_sub = (int) type;
+			}
 
-			CloseSub();
-
-			_sub = (int) type;
 			_subTreeView.Clear();
 			_modules[_sub].TreeView = _subTreeView;
-			_modules[_sub].OnEnter(param);
+			_modules[_sub].Enter(param);
 			_hasSub = true;
 			_subTreeView.SetFocus();
 		}

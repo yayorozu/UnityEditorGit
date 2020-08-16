@@ -17,18 +17,17 @@ namespace Yayorozu.EditorTools.Git
 
 		protected override void OnInit()
 		{
-			KeyDic.Add(KeyCode.U, ChangeStage);
-			// Refresh
-			KeyDic.Add(KeyCode.R, item => Refresh(TreeView.GetSelectionIndex()));
-			KeyDic.Add(KeyCode.Z, ChangeUndo);
-			KeyDic.Add(KeyCode.Return, item => {
+			KeyDic.Add(new ShortCut(KeyCode.U, "Change Stage", ChangeStage));
+			KeyDic.Add(new ShortCut(KeyCode.R, "Refresh", item => Refresh(TreeView.GetSelectionIndex())));
+			KeyDic.Add(new ShortCut(KeyCode.Z, "Undo", ChangeUndo));
+			KeyDic.Add(new ShortCut(KeyCode.Return, "Show Diff", item => {
 				if (item.depth != 1)
 					return;
 				var param = new DiffParam();
 				param.SetFile(item.displayName, item.Status == GitStatusType.Stage);
 				GUI.OpenSub(ModuleType.Diff, param);
-			});
-			KeyDic.Add(KeyCode.T, item =>
+			}));
+			KeyDic.Add(new ShortCut(KeyCode.T, "Target", item =>
 			{
 				if (item.depth != 1)
 					return;
@@ -43,10 +42,10 @@ namespace Yayorozu.EditorTools.Git
 
 				var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(item.displayName);
 				Selection.objects = new[] {asset};
-			});
+			}));
 		}
 
-		internal override void OnEnter(object o)
+		protected override void OnEnter(object o)
 		{
 			Refresh((int?) o ?? 0);
 

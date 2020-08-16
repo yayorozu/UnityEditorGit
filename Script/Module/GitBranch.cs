@@ -9,16 +9,14 @@ namespace Yayorozu.EditorTools.Git
 	{
 		protected override void OnInit()
 		{
-			KeyDic.Add(KeyCode.W, SwitchBranch);
-
-			// Reload
-			KeyDic.Add(KeyCode.R, item =>
+			KeyDic.Add(new ShortCut(KeyCode.W, "Change Branch", SwitchBranch));
+			KeyDic.Add(new ShortCut(KeyCode.R, "Reload", item =>
 			{
 				Fetch();
 				OnEnter(null);
-			});
+			}));
 
-			KeyDic.Add(KeyCode.Return, item => GUI.OpenSub(ModuleType.Log, item.displayName));
+			KeyDic.Add(new ShortCut(KeyCode.Return, "Show Log", item => GUI.OpenSub(ModuleType.Log, item.displayName)));
 		}
 
 		internal override ModuleType Type => ModuleType.Branch;
@@ -28,7 +26,7 @@ namespace Yayorozu.EditorTools.Git
 		private string _current;
 		private string _newBranchName;
 
-		internal override void OnEnter(object o)
+		protected override void OnEnter(object o)
 		{
 			_newBranchName = string.Empty;
 			var branches = GetBranches();

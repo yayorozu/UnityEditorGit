@@ -26,17 +26,14 @@ namespace Yayorozu.EditorTools.Git
 
 		protected override void OnInit()
 		{
-			KeyDic.Add(KeyCode.Return, item =>
+			KeyDic.Add(new ShortCut(KeyCode.Return, "Show Diff", item =>
 			{
 				var param = new DiffParam();
 				param.SetHash(item.displayName);
 				GUI.OpenSub(ModuleType.Diff, param);
-			});
-			KeyDic.Add(KeyCode.R, item =>
-			{
-				OnEnter(CurrentBranch());
-			});
-			KeyDic.Add(KeyCode.P, item =>
+			}));
+			KeyDic.Add(new ShortCut(KeyCode.R, "Reload", item => OnEnter(CurrentBranch())));
+			KeyDic.Add(new ShortCut(KeyCode.P, "Push", item =>
 			{
 				var branch = CurrentBranch();
 				if (EditorUtility.DisplayDialog("Warning", $"Try to Push \"{branch}\" ?", "Yes", "No"))
@@ -44,8 +41,8 @@ namespace Yayorozu.EditorTools.Git
 					Push(branch);
 					OnEnter(branch);
 				}
-			});
-			KeyDic.Add(KeyCode.F, item =>
+			}));
+			KeyDic.Add(new ShortCut(KeyCode.F, "Pull", item =>
 			{
 				var cb = CurrentBranch();
 				if (cb.StartsWith("origin/"))
@@ -69,10 +66,10 @@ namespace Yayorozu.EditorTools.Git
 				var o3 = PullRebase(cb);
 				EditorUtility.DisplayDialog("Info", o3, "Ok");
 				OnEnter(cb);
-			});
+			}));
 		}
 
-		internal override void OnEnter(object o)
+		protected override void OnEnter(object o)
 		{
 			var items = GetLog(o != null ? (string) o : "")
 				.Select((l, index) => new GitTreeViewItem(l)

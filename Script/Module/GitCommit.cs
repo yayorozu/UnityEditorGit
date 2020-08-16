@@ -16,7 +16,7 @@ namespace Yayorozu.EditorTools.Git
 		private string _message;
 		private bool _isAmend;
 
-		internal override void OnEnter(object o)
+		protected override void OnEnter(object o)
 		{
 			_message = string.Empty;
 			_isAmend = false;

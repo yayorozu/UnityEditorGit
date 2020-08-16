@@ -50,16 +50,17 @@ namespace Yayorozu.EditorTools.Git
 
 		protected override void OnInit()
 		{
-			KeyDic.Add(KeyCode.Return, Jump);
+			KeyDic.Add(new ShortCut(KeyCode.Return, "Jump", Jump));
 		}
 
-		internal override void OnEnter(object o)
+		protected override void OnEnter(object o)
 		{
 			if (o == null)
 			{
 				GUI.Transition(ModuleType.Log);
 				return;
 			}
+
 			var param = (DiffParam) o;
 			var list = param.isLog ?
 					GetLogList(param) :

@@ -7,6 +7,22 @@ using UnityEngine;
 namespace Yayorozu.EditorTools.Git
 {
 	[Serializable]
+	public class ShortCut
+	{
+		public KeyCode KeyCode;
+		public string Description;
+		[SerializeField]
+		public Action<GitTreeViewItem> Action;
+
+		public ShortCut(KeyCode keyCode, string desc, Action<GitTreeViewItem> action)
+		{
+			KeyCode = keyCode;
+			Description = desc;
+			Action = action;
+		}
+	}
+
+	[Serializable]
 	public abstract class GitModule
 	{
 		internal GitTreeView TreeView;
@@ -15,15 +31,19 @@ namespace Yayorozu.EditorTools.Git
 
 		internal bool Lock;
 
-		protected Dictionary<KeyCode, Action<GitTreeViewItem>> KeyDic = new Dictionary<KeyCode, Action<GitTreeViewItem>>();
+		protected List<ShortCut> KeyDic;
 
-		internal IEnumerable<KeyCode> ShortCuts => KeyDic.Keys;
+		internal IEnumerable<KeyCode> ShortCuts => KeyDic.Select(k => k.KeyCode);
 
 		protected static readonly char[] GitStatusChar = {'M', 'A', 'D', 'R', 'C', 'U'};
+
+		[SerializeReference]
+		protected object _cache;
 
 		internal void Init(GitGUI window)
 		{
 			GUI = window;
+			KeyDic = new List<ShortCut>();
 			OnInit();
 		}
 
@@ -39,7 +59,18 @@ namespace Yayorozu.EditorTools.Git
 			TreeView.OnGUI(rect);
 		}
 
-		internal abstract void OnEnter(object o);
+		internal void Reload()
+		{
+			OnEnter(_cache);
+		}
+
+		internal void Enter(object o)
+		{
+			_cache = o;
+			OnEnter(o);
+		}
+
+		protected abstract void OnEnter(object o);
 
 		internal void Exit()
 		{
@@ -61,10 +92,14 @@ namespace Yayorozu.EditorTools.Git
 
 		internal void KeyEvent(GitTreeViewItem item, KeyCode keyCode)
 		{
-			if (!KeyDic.ContainsKey(keyCode))
+			var index = KeyDic.FindIndex(k => k.KeyCode == keyCode);
+			if (index < 0)
 				return;
 
-			KeyDic[keyCode].Invoke(item);
+			if (KeyDic[index].Action == null)
+				return;
+
+			KeyDic[index].Action.Invoke(item);
 		}
 
 		protected void Add(string path)
