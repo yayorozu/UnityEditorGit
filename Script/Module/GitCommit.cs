@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Yayorozu.EditorTools.Git
+namespace Yorozu.EditorTools.Git
 {
 	[Serializable]
 	public class GitCommit : GitModule

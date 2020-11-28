@@ -1,4 +1,4 @@
-namespace Yayorozu.EditorTools.Git
+namespace Yorozu.EditorTools.Git
 {
 	internal enum ModuleType
 	{

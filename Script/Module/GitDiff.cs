@@ -6,7 +6,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Yayorozu.EditorTools.Git
+namespace Yorozu.EditorTools.Git
 {
 	internal class DiffParam
 	{

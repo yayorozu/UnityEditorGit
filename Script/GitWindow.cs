@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Yayorozu.EditorTools.Git
+namespace Yorozu.EditorTools.Git
 {
 	internal class GitWindow : EditorWindow
 	{

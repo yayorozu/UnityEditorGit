@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using UnityEditor.IMGUI.Controls;
 
-namespace Yayorozu.EditorTools.Git
+namespace Yorozu.EditorTools.Git
 {
 	internal enum GitStatusType
 	{
