@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Yorozu.EditorTools.Git
+namespace Yorozu.EditorTool.Git
 {
 	internal static class ColorLabel
 	{

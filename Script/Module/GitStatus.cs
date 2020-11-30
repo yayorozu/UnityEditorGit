@@ -6,7 +6,7 @@ using UnityEditor.IMGUI.Controls;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Yorozu.EditorTools.Git
+namespace Yorozu.EditorTool.Git
 {
 	[Serializable]
 	public class GitStatus : GitModule

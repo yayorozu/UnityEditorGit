@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Yorozu.EditorTools.Git
+namespace Yorozu.EditorTool.Git
 {
 	internal static class Command
 	{

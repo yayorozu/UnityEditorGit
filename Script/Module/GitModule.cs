@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Yorozu.EditorTools.Git
+namespace Yorozu.EditorTool.Git
 {
 	[Serializable]
 	public class ShortCut
